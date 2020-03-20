@@ -20,89 +20,100 @@ const parsePackage = ({
   showVersions,
   prodOnly
 }: {
-  npmOnly: boolean;
-  yarnOnly: boolean;
-  path: string;
-  showVersions: boolean;
-  prodOnly: boolean;
+  npmOnly: boolean | undefined;
+  yarnOnly: boolean | undefined;
+  path: string | undefined;
+  showVersions: boolean | undefined;
+  prodOnly: boolean | undefined;
 }) => {
-  const packageBuffer = fs.readFileSync(path.resolve(process.cwd(), filePath));
+  try {
+    const packageBuffer = fs.readFileSync(
+      path.resolve(process.cwd(), filePath || 'package.json')
+    );
 
-  const packageContent = JSON.parse(String(packageBuffer));
+    const packageContent = JSON.parse(String(packageBuffer));
 
-  const {
-    dependencies: dependenciesObj = {},
-    devDependencies: devDependenciesObj = {}
-  } = packageContent;
-  if (
-    Object.keys(dependenciesObj).length == 0 &&
-    Object.keys(devDependenciesObj).length == 0
-  )
-    return console.log(chalk.red('There are no packages!'));
+    const {
+      dependencies: dependenciesObj = {},
+      devDependencies: devDependenciesObj = {}
+    } = packageContent;
+    if (
+      Object.keys(dependenciesObj).length == 0 &&
+      Object.keys(devDependenciesObj).length == 0
+    )
+      return console.log(chalk.red('There are no packages!'));
 
-  const dependencies = Object.keys(dependenciesObj);
-  const dependenciesVersions = Object.values(dependenciesObj) as string[];
+    const dependencies = Object.keys(dependenciesObj);
+    const dependenciesVersions = Object.values(dependenciesObj) as string[];
 
-  const devDependencies = Object.keys(devDependenciesObj);
-  const devDependenciesVersions = Object.values(devDependenciesObj) as string[];
+    const devDependencies = Object.keys(devDependenciesObj);
+    const devDependenciesVersions = Object.values(
+      devDependenciesObj
+    ) as string[];
 
-  if (!npmOnly) {
-    if (showVersions) {
-      console.log(chalk.green('YARN DEPENDENCIES:\n'));
-      console.log(
-        `yarn add ${zipVersions(dependencies, dependenciesVersions)}\n`
-      );
-      if (!prodOnly) {
-        console.log(chalk.blue('YARN DEV DEPENDENCIES:\n'));
+    if (!npmOnly) {
+      if (showVersions) {
+        console.log(chalk.green('YARN DEPENDENCIES:\n'));
         console.log(
-          `yarn add -D ${zipVersions(
-            devDependencies,
-            devDependenciesVersions
-          )}\n`
+          `yarn add ${zipVersions(dependencies, dependenciesVersions)}\n`
         );
-      }
-    } else {
-      console.log(chalk.green('YARN DEPENDENCIES:\n'));
-      console.log(`yarn add ${dependencies.join(' ')}\n`);
-      if (!prodOnly) {
-        console.log(chalk.blue('YARN DEV DEPENDENCIES:\n'));
-        console.log(`yarn add -D ${devDependencies.join(' ')}\n`);
+        if (!prodOnly) {
+          console.log(chalk.blue('YARN DEV DEPENDENCIES:\n'));
+          console.log(
+            `yarn add -D ${zipVersions(
+              devDependencies,
+              devDependenciesVersions
+            )}\n`
+          );
+        }
+      } else {
+        console.log(chalk.green('YARN DEPENDENCIES:\n'));
+        console.log(`yarn add ${dependencies.join(' ')}\n`);
+        if (!prodOnly) {
+          console.log(chalk.blue('YARN DEV DEPENDENCIES:\n'));
+          console.log(`yarn add -D ${devDependencies.join(' ')}\n`);
+        }
       }
     }
-  }
 
-  if (!yarnOnly) {
-    if (showVersions) {
-      console.log(chalk.green('NPM DEPENDENCIES:\n'));
-      console.log(
-        `npm install ${zipVersions(dependencies, dependenciesVersions)}\n`
-      );
-      if (!prodOnly) {
-        console.log(chalk.blue('NPM DEV DEPENDENCIES:\n'));
+    if (!yarnOnly) {
+      if (showVersions) {
+        console.log(chalk.green('NPM DEPENDENCIES:\n'));
         console.log(
-          `npm install --save-dev ${zipVersions(
-            devDependencies,
-            devDependenciesVersions
-          )}\n`
+          `npm install ${zipVersions(dependencies, dependenciesVersions)}\n`
         );
-      }
-    } else {
-      console.log(chalk.green('NPM DEPENDENCIES:\n'));
-      console.log(`npm install ${dependencies.join(' ')}\n`);
-      if (!prodOnly) {
-        console.log(chalk.blue('NPM DEV DEPENDENCIES:\n'));
-        console.log(`npm install --save-dev ${devDependencies.join(' ')}\n`);
+        if (!prodOnly) {
+          console.log(chalk.blue('NPM DEV DEPENDENCIES:\n'));
+          console.log(
+            `npm install --save-dev ${zipVersions(
+              devDependencies,
+              devDependenciesVersions
+            )}\n`
+          );
+        }
+      } else {
+        console.log(chalk.green('NPM DEPENDENCIES:\n'));
+        console.log(`npm install ${dependencies.join(' ')}\n`);
+        if (!prodOnly) {
+          console.log(chalk.blue('NPM DEV DEPENDENCIES:\n'));
+          console.log(`npm install --save-dev ${devDependencies.join(' ')}\n`);
+        }
       }
     }
+  } catch (e) {
+    console.log(
+      'Error running script. Are you pointing to the right package.json?'
+    );
+    process.exit(1);
   }
 };
 
 program
   .version(
-    chalk.blue('version 1.0.0, built with love by aniravi24 and enaluz'),
+    chalk.blue('version 1.0.2, built with love by aniravi24 and enaluz'),
     '-v, --version'
   )
-  .requiredOption('-p, --path <file>', 'path to package.json')
+  .option('-p, --path <file>', 'path to package.json')
   .option('-y, --yarn-only', 'only show yarn commands')
   .option('-n, --npm-only', 'only show npm commands')
   .option('-s, --show-versions', 'get exact versions for packages')

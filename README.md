@@ -15,7 +15,7 @@ NPM:
 ```
 Options:
   -v, --version        output the version number
-  -p, --path <file>    path to package.json (required)
+  -p, --path <file>    path to package.json
   -y, --yarn-only      only show yarn commands
   -n, --npm-only       only show npm commands
   -s, --show-versions  get exact versions for packages
@@ -25,7 +25,7 @@ Options:
 
 ## Example
 
-running `get-deps-cmd -p package.json` will output the following:
+running `get-deps-cmd` in a directory containing a package.json file will output the following:
 
 ```
 YARN DEPENDENCIES:
