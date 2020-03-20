@@ -1,11 +1,21 @@
 # get-deps-cmd
+
 Read a package.json and get the commands to install all dependencies for yarn and/or npm.
 
+## Installation
+
+Yarn:
+`yarn add global get-deps-cmd`
+
+NPM:
+`npm install -g get-deps-cmd`
+
 ## Usage
+
 ```
 Options:
   -v, --version        output the version number
-  -p, --path <file>    path to package.json
+  -p, --path <file>    path to package.json (required)
   -y, --yarn-only      only show yarn commands
   -n, --npm-only       only show npm commands
   -s, --show-versions  get exact versions for packages
@@ -14,7 +24,9 @@ Options:
 ```
 
 ## Example
+
 running `get-deps-cmd -p package.json` will output the following:
+
 ```
 YARN DEPENDENCIES:
 
