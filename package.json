@@ -19,7 +19,16 @@
     "command",
     "package.json"
   ],
-  "author": "Anirudh Ravichandran <5902976+aniravi24@users.noreply.github.com>",
+  "contributors": [
+    {
+      "name": "Anirudh Ravichandran",
+      "url": "https://github.com/aniravi24"
+    },
+    {
+      "name": "Ethan Naluz",
+      "url": "https://github.com/enaluz"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aniravi24/get-deps-cmd/issues"
