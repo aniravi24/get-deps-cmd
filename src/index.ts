@@ -26,7 +26,7 @@ const parsePackage = ({
   showVersions: boolean;
   prodOnly: boolean;
 }) => {
-  const packageBuffer = fs.readFileSync(path.resolve(__dirname, filePath));
+  const packageBuffer = fs.readFileSync(path.resolve(process.cwd(), filePath));
 
   const packageContent = JSON.parse(String(packageBuffer));
 
